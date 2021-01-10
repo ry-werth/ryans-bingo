@@ -1,0 +1,4 @@
+Django==2.2.10
+gunicorn==19.7.1
+psycopg2==2.7.3.2
+django-heroku==0.3.1

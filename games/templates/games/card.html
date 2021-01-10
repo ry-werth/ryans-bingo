@@ -1,0 +1,117 @@
+{% extends "games/base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block body-class %}main-card{% endblock body-class %}
+
+{% block content %}
+    <h2>Card Number {{ card_number }}</h2>
+
+    <div class="card-header">
+        <p>B</p>
+        <p>I</p>
+        <p>N</p>
+        <p>G</p>
+        <p>O</p>
+    </div>
+    <div class="card">
+        {% for r in card_data %}
+            <div class="row">
+                {% for c in r %}
+                <div class="square" data-row="{{forloop.parentloop.counter}}" data-col="{{forloop.counter}}">
+                    <div class="number">
+                    {% if forloop.parentloop.counter == 3 and forloop.counter == 3 %}
+                    Free
+                    {% else %}
+                        {{ c }}
+                    {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="bingo-alert">
+        YOU HAVE BINGO!
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script>
+        {% load staticfiles %}
+
+        var bingo_dict = {
+            "row_1": 0,
+            "row_2": 0,
+            "row_3": 0,
+            "row_4": 0,
+            "row_5": 0,
+            "col_1": 0,
+            "col_2": 0,
+            "col_3": 0,
+            "col_4": 0,
+            "col_5": 0,
+            "diag_lr": 0,
+            "diag_rl": 0,
+        };
+
+        var bingo_boolean = false;
+        // var audio = new Audio("{% static 'games/audio/bingo.mp3' %}");
+        var audio = new Audio("{% static 'games/audio/that_s_a_bingo.mp3' %}");
+
+        $(".square").click(function(){
+          $(this).toggleClass("clicked");
+          console.log("Sqare Clicked")
+          console.log($(this).attr('data-row'));
+          console.log($(this).attr('data-col'));
+
+          //check rows and cols for bingo
+          if ($(this).hasClass("clicked")){
+            bingo_dict["row_" + $(this).attr('data-row')] = bingo_dict["row_" + $(this).attr('data-row')] + 1;
+            bingo_dict["col_" + $(this).attr('data-col')] = bingo_dict["col_" + $(this).attr('data-col')] + 1;
+          } else {
+            bingo_dict["row_" + $(this).attr('data-row')] = bingo_dict["row_" + $(this).attr('data-row')] - 1;
+            bingo_dict["col_" + $(this).attr('data-col')] = bingo_dict["col_" + $(this).attr('data-col')] - 1;
+          }
+
+          // check left to right diag for bingo
+          if ($(this).attr('data-row') == $(this).attr('data-col')) {
+            if ($(this).hasClass("clicked")){
+                bingo_dict['diag_lr'] = bingo_dict['diag_lr'] + 1;
+            } else {
+                bingo_dict['diag_lr'] = bingo_dict['diag_lr'] - 1;
+            }
+          }
+
+          // check right to left for bingo
+          if (parseInt($(this).attr('data-row')) + parseInt($(this).attr('data-col')) == 6) {
+            if ($(this).hasClass("clicked")){
+                bingo_dict['diag_rl'] = bingo_dict['diag_rl'] + 1;
+            } else {
+                bingo_dict['diag_rl'] = bingo_dict['diag_rl'] - 1;
+            }
+          }
+
+          console.log(bingo_dict);
+
+          var values = Object.keys(bingo_dict).map(function(key){
+            return bingo_dict[key];
+          });
+
+          bingo_boolean = values.includes(5);
+
+          if (bingo_boolean) {
+            console.log('BINGO!')
+            audio.play();
+            $('.bingo-alert').addClass('active');
+          } else {
+            $('.bingo-alert').removeClass('active');
+          }
+
+        });
+
+    </script>
+{% endblock content %}
+
+

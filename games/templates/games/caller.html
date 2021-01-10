@@ -1,0 +1,69 @@
+{% extends "games/base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block body-class %}caller{% endblock body-class %}
+
+{% block content %}
+
+    <button id="callBtn">Call</button>
+
+    <div class="call-wrapper">
+        <p class="call-title">Call #<span id="callNumber">1</span> : <span id="callLabel"></span></p>
+        <p class="past-call-title">Past Calls:</p>
+        <div class="past-calls" id="past-calls">
+        </div>
+    </div>
+
+    <script>
+        let numbers = [];
+        let pastCalls = [];
+        for (let i = 1; i <= 75; i++) {
+            numbers.push(i);
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+
+
+        function formatCall(num) {
+
+            let bingo_index = Math.floor((num-1)/15);
+
+            let letters = ["B","I","N","G","O"];
+            let letter = letters[bingo_index];
+
+            return(letter + " - " + parseInt(num));
+        }
+
+
+        function call() {
+            let pastCallsElem = document.getElementById("past-calls");
+            pastCallsElem.innerText = null;
+            for (var i = pastCalls.length - 1; i >= 0; --i) {
+                    var pastCall = pastCalls[i]
+                    var p = document.createElement("p");
+                    p.innerHTML = pastCall;
+                    pastCallsElem.appendChild(p);
+            }
+            let numbers_left = numbers.length;
+            if (numbers_left > 0) {
+                let rand_index = getRandomInt(numbers_left);
+                let called_number = numbers[rand_index];
+                numbers.splice(rand_index, 1);
+
+                let formattedCall = formatCall(called_number);
+                console.log(formattedCall);
+                pastCalls.push(formattedCall);
+                document.getElementById("callNumber").innerHTML = pastCalls.length;
+                document.getElementById("callLabel").innerHTML = formattedCall;
+            }
+        }
+
+        document.getElementById("callBtn").addEventListener("click", call);
+
+    </script>
+
+{% endblock content %}
