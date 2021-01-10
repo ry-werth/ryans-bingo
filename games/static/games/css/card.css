@@ -21,7 +21,7 @@ body.main-card .bingo-alert.active {
 body.main-card .card-header {
     display: flex;
     flex-direction: row;
-    width: 400px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -32,7 +32,7 @@ body.main-card .card-header p {
 }
 
 body.main-card .card {
-    width: 400px;
+    max-width: 400px;
     margin: 0 auto;
     height: 400px;
     border-left: 1px solid black;
